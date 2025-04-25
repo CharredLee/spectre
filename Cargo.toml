@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 nom = "8.0"
 crossterm = "0.29"
+regex = "1.11"
