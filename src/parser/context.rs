@@ -33,6 +33,15 @@ impl FunctionCallFormat {
     }
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Context::new(FunctionCallFormat::new(
+            "(NAME ARGS)".to_string(),
+            " ".to_string(),
+        ))
+    }
+}
+
 impl Context {
     pub fn new(function_call_format: FunctionCallFormat) -> Self {
         Context {

@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, PartialEq)]
-pub enum Ast {
+pub enum Expr {
     FunctionCall(FunctionCall),
     Literal(Literal),
     // FunctionDefinition(FunctionDefinition),
@@ -9,7 +9,7 @@ pub enum Ast {
 #[derive(Debug, Clone, PartialEq)]
 pub struct FunctionCall {
     pub name: String,
-    pub args: Vec<Ast>,
+    pub args: Vec<Expr>,
 }
 
 #[derive(Debug, Clone, PartialEq)]

@@ -65,10 +65,10 @@ fn parse_function_call<'a>(context: &'a Context, input: &'a str) -> IResult<&'a 
                 .map(|arg| {
                     let trimmed = arg.trim();
                     if let Ok((_, literal)) = parse_literal(trimmed) {
-                        Ast::Literal(literal)
+                        Expr::Literal(literal)
                     } else {
                         failed = true;
-                        Ast::Literal(Literal::String(trimmed.to_string()))
+                        Expr::Literal(Literal::String(trimmed.to_string()))
                     }
                 })
                 .collect()
@@ -89,14 +89,22 @@ fn parse_function_call<'a>(context: &'a Context, input: &'a str) -> IResult<&'a 
     }
 }
 
-pub fn parse_expression<'a>(
-    context: &'a Context,
-    input: &'a str,
-) -> IResult<&'a str, (Ast, Context)> {
+pub fn parse_expression<'a>(context: &'a Context, input: &'a str) -> IResult<&'a str, Expr> {
+    // input here is
     todo!()
 }
 
-pub fn parse_program(input: &str) -> Result<Vec<Ast>, String> {
+pub fn parse_program(input: &str) -> Result<Vec<Expr>, String> {
+    // input here is the whole file
+    let mut context = Context::default();
+    let mut remainder = input;
+
+    while !remainder.trim().is_empty() {
+        match parse_expression(&context, input) {
+            Ok(_) => todo!(),
+            Err(_) => todo!(),
+        }
+    }
     todo!()
 }
 
@@ -115,11 +123,11 @@ mod tests {
         let result = parse_expression(&mut context, input);
 
         assert!(result.is_ok());
-        let (rest, (ast, new_context)) = result.unwrap();
+        let (rest, expr) = result.unwrap();
         assert_eq!(rest, "");
 
-        match ast {
-            Ast::FunctionCall(call) => {
+        match expr {
+            Expr::FunctionCall(call) => {
                 assert_eq!(call.name, "foo");
                 assert_eq!(call.args.len(), 2);
             }
@@ -142,7 +150,7 @@ mod tests {
 
         // First node: foo(bar baz) with original syntax
         match &ast_nodes[0] {
-            Ast::FunctionCall(call) => {
+            Expr::FunctionCall(call) => {
                 assert_eq!(call.name, "foo");
                 assert_eq!(call.args.len(), 2);
             }
@@ -151,7 +159,7 @@ mod tests {
 
         // Second node: SPEC function call
         match &ast_nodes[1] {
-            Ast::FunctionCall(call) if call.name == "SPEC" => {
+            Expr::FunctionCall(call) if call.name == "SPEC" => {
                 assert_eq!(call.args.len(), 3);
             }
             _ => panic!("Expected SPEC call"),
@@ -159,7 +167,7 @@ mod tests {
 
         // Third node: bar:qux,quux with updated syntax
         match &ast_nodes[2] {
-            Ast::FunctionCall(call) => {
+            Expr::FunctionCall(call) => {
                 assert_eq!(call.name, "bar");
                 assert_eq!(call.args.len(), 2);
             }
